@@ -1,0 +1,6 @@
+{
+  "name": "ScrollLearn AI - Reels Educativos de Libros y PDFs",
+  "description": "Convierte libros y archivos PDF en shorts y reels educativos verticales de alto impacto con auto-scroll, narración de voz, tarjetas interactivas y retos de aprendizaje.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
