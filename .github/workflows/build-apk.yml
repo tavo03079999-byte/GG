@@ -15,10 +15,8 @@ jobs:
       - name: Descomprimir paquete actualizado
         run: |
           if [ -f "GG_Actualizado_Para_GitHub.zip" ]; then
-            echo "Descomprimiendo actualizacion..."
-            unzip -o GG_Actualizado_Para_GitHub.zip
-            mkdir -p SUBIR_A_GITHUB
-            unzip -o GG_Actualizado_Para_GitHub.zip -d SUBIR_A_GITHUB
+            echo "Extrayendo archivos actualizados..."
+            python3 -c "import zipfile; zipfile.ZipFile('GG_Actualizado_Para_GitHub.zip').extractall('.')"
           fi
       - name: Configurar Node.js 22
         uses: actions/setup-node@v4
@@ -41,7 +39,9 @@ jobs:
           gradle-version: '8.6'
       - name: Generar app-debug.apk
         working-directory: android
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: |
+          chmod +x gradlew || true
+          gradle assembleDebug --no-daemon --stacktrace
       - name: Subir app-debug.apk como Artefacto
         uses: actions/upload-artifact@v4
         with:
