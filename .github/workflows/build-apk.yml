@@ -1,53 +1,50 @@
 name: Compilar APK GG ScrollLearn
-
 on:
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   build:
     name: Compilar app-debug.apk
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout del codigo fuente
         uses: actions/checkout@v4
-
+      - name: Descomprimir paquete actualizado
+        run: |
+          if [ -f "GG_Actualizado_Para_GitHub.zip" ]; then
+            echo "Descomprimiendo actualizacion..."
+            unzip -o GG_Actualizado_Para_GitHub.zip
+            mkdir -p SUBIR_A_GITHUB
+            unzip -o GG_Actualizado_Para_GitHub.zip -d SUBIR_A_GITHUB
+          fi
       - name: Configurar Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - name: Compilar aplicacion web Vite
-        working-directory: SUBIR_A_GITHUB
         run: |
           npm install --no-audit --no-fund
           npm run build
           mkdir -p android/app/src/main/assets/www
           cp -r dist/* android/app/src/main/assets/www/
-
       - name: Configurar JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-
       - name: Configurar Gradle 8.6
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.6'
-
       - name: Generar app-debug.apk
-        working-directory: SUBIR_A_GITHUB/android
+        working-directory: android
         run: gradle assembleDebug --no-daemon --stacktrace
-
       - name: Subir app-debug.apk como Artefacto
         uses: actions/upload-artifact@v4
         with:
           name: GG-ScrollLearn-APK
-          path: SUBIR_A_GITHUB/android/app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 14
